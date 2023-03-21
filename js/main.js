@@ -1,16 +1,47 @@
 /**
  * Load data from CSV file asynchronously and render charts
  */
-d3.csv('data/Sleep_Efficiency.csv').then(data => {
 
-    // Convert columns to numerical values
+// global objects
+const parseTime = d3.timeParse("%H:%M");
+let data, lineChart, pieChart, bubbleChart, heatmap;
+
+d3.csv('data/Sleep_Efficiency_preprocessed.csv').then(_data => {
+    data = _data;
     data.forEach(d => {
-        Object.keys(d).forEach(attr => {
-            // TODO: data preprocessing
-        });
+        d.age = +d.age;
+        d.id = +d.id;
+        d.sleepDuration = +d.sleepDuration;
+        d.sleepEfficiency = +d.sleepEfficiency;
+        d.REMSleepPercentage = +d.REMSleepPercentage;
+        d.deepSleepPercentage = +d.deepSleepPercentage;
+        d.lightSleepPercentage = +d.lightSleepPercentage;
+        d.caffeineConsumption = +d.caffeineConsumption;
+        d.alcoholConsumption = +d.alcoholConsumption;
+        d.exerciseFrequency = +d.exerciseFrequency;
+        d.time = parseTime(d.time);
     });
-});
 
+    lineChart = new LineChart({
+        parentElement: '#linechart',
+    }, data);
+    lineChart.updateVis();
+
+    pieChart = new PieChart({
+        parentElement: '#piechart',
+    }, data);
+    pieChart.updateVis();
+
+    bubbleChart = new BubbleChart({
+        parentElement: '#bubblechart',
+    }, data);
+    bubbleChart.updateVis();
+
+    heatmap = new Heatmap({
+        parentElement: '#heatmap',
+    }, data);
+    heatmap.updateVis();
+});
 /*
  * Todo:
  * - initialize views
