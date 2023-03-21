@@ -5,7 +5,7 @@ class PieChart {
      * @param {Object}
      * @param {Array}
      */
-    constructor(_config) {
+    constructor(_config, _data) {
         // TODO: adjust config according to the design and add parameters if needed
         this.config = {
             parentElement: _config.parentElement,
@@ -13,6 +13,7 @@ class PieChart {
             containerHeight: 380,
             margin: {top: 15, right: 15, bottom: 20, left: 25}
         }
+        this.data = _data;
         this.initVis();
     }
 
