@@ -22,25 +22,29 @@ d3.csv('data/Sleep_Efficiency_preprocessed.csv').then(_data => {
         d.time = parseTime(d.time);
     });
 
-    lineChart = new LineChart({
-        parentElement: '#linechart',
-    }, data);
-    lineChart.updateVis();
+    // TODO: commented out to avoid errors, uncomment for testing purpose
+    // lineChart = new LineChart({
+    //     parentElement: '#linechart',
+    // }, data);
+    // lineChart.updateVis();
+    //
+    // pieChart = new PieChart({
+    //     parentElement: '#piechart',
+    // }, data);
+    // pieChart.updateVis();
+    //
+    // bubbleChart = new BubbleChart({
+    //     parentElement: '#bubblechart',
+    // }, data);
+    // bubbleChart.updateVis();
+    //
+    // heatmap = new Heatmap({
+    //     parentElement: '#heatmap',
+    // }, data);
+    // heatmap.updateVis();
 
-    pieChart = new PieChart({
-        parentElement: '#piechart',
-    }, data);
-    pieChart.updateVis();
-
-    bubbleChart = new BubbleChart({
-        parentElement: '#bubblechart',
-    }, data);
-    bubbleChart.updateVis();
-
-    heatmap = new Heatmap({
-        parentElement: '#heatmap',
-    }, data);
-    heatmap.updateVis();
+    // TODO: take a look at variables after transformation first
+    console.log(data);
 });
 /*
  * Todo:
