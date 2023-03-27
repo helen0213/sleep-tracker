@@ -12,3 +12,9 @@ body {
 .margin-right {
     margin-right: 30px;
 }
+
+.chart-line {
+    stroke: steelblue;
+    fill: none;
+    stroke-width: 1.5px;
+  }

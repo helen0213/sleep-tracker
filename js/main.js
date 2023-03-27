@@ -3,7 +3,6 @@
  */
 
 // global objects
-const parseTime = d3.timeParse("%H:%M");
 let data, lineChart, pieChart, bubbleChart, heatmap;
 
 d3.csv('data/Sleep_Efficiency_preprocessed.csv').then(_data => {
@@ -19,18 +18,22 @@ d3.csv('data/Sleep_Efficiency_preprocessed.csv').then(_data => {
         d.caffeineConsumption = +d.caffeineConsumption;
         d.alcoholConsumption = +d.alcoholConsumption;
         d.exerciseFrequency = +d.exerciseFrequency;
-        d.time = parseTime(d.time);
+        if (d.time.charAt(0) == '0') {
+            d.time = "02 " + d.time;
+        } else {
+            d.time = "01 " + d.time;
+        }
     });
 
     // TODO: commented out to avoid errors, uncomment for testing purpose
-    // lineChart = new LineChart({
-    //     parentElement: '#linechart',
-    // }, data);
+    lineChart = new LineChart({
+        parentElement: '#linechart',
+    }, data);
     // lineChart.updateVis();
     //
-    // pieChart = new PieChart({
-    //     parentElement: '#piechart',
-    // }, data);
+    pieChart = new PieChart({
+        parentElement: '#piechart',
+    }, data);
     // pieChart.updateVis();
     //
     // bubbleChart = new BubbleChart({
