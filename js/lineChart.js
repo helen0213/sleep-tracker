@@ -9,9 +9,9 @@ class LineChart {
         // TODO: adjust config according to the design and add parameters if needed
         this.config = {
             parentElement: _config.parentElement,
-            containerWidth: 700,
+            containerWidth: 650,
             containerHeight: 350,
-            margin: {top: 15, right: 15, bottom: 20, left: 25}
+            margin: { top: 15, right: 15, bottom: 20, left: 25 }
         }
         this.data = _data;
         this.initVis();
@@ -23,42 +23,61 @@ class LineChart {
 
         vis.config.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
         vis.config.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
-    
+
         vis.xScale = d3.scaleTime()
-            .range([0, vis.config.width - 10]);
-    
+            .range([0, vis.config.width - 20]);
+
         vis.yScale = d3.scaleLinear()
-            .range([vis.config.height, 10])
+            .range([vis.config.height - 10, 10])
             .nice();
-    
+
         // Initialize axes
         vis.xAxis = d3.axisBottom(vis.xScale)
             .ticks(6)
             .tickSizeOuter(0)
-            .tickFormat(d3.timeFormat("%I:%M %p"));
-    
+            .tickPadding(5)
+            .tickFormat(d3.timeFormat("%I %p"));
+
         vis.yAxis = d3.axisLeft(vis.yScale)
             .ticks(5)
+            .tickSize(-vis.config.width + 20)
+            .tickPadding(10)
             .tickSizeOuter(0);
-    
+
         // Define size of SVG drawing area
         vis.svg = d3.select(vis.config.parentElement)
             .attr('width', vis.config.containerWidth)
             .attr('height', vis.config.containerHeight);
-    
+
         // Append group element that will contain our actual chart (see margin convention)
         vis.chart = vis.svg.append('g')
             .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
-    
+
         // Append empty x-axis group and move it to the bottom of the chart
         vis.xAxisG = vis.chart.append('g')
             .attr('class', 'axis x-axis')
             .attr('transform', `translate(0,${vis.config.height})`);
-        
+
         // Append y-axis group
         vis.yAxisG = vis.chart.append('g')
             .attr('class', 'axis y-axis');
-      
+
+        // Append both axis titles
+        vis.svg.append('text')
+            .attr('class', 'axis-title')
+            .attr('y', vis.config.containerHeight - 10)
+            .attr('x', vis.config.containerWidth - 5)
+            .attr('dy', '.71em')
+            .style('text-anchor', 'end')
+            .text('Bedtime');
+
+        vis.svg.append('text')
+            .attr('class', 'axis-title')
+            .attr('x', 0)
+            .attr('y', 15)
+            .attr('dy', '.71em')
+            .text('Count');
+
         vis.updateVis();
     }
 
@@ -70,15 +89,15 @@ class LineChart {
         vis.groupedData.forEach(d => {
             d[0] = parseTime(d[0]);
             d.count = d[1].length;
-          });
-        vis.groupedData.sort((a,b) => b[0] - a[0]);
-        
+        });
+        vis.groupedData.sort((a, b) => b[0] - a[0]);
+
         vis.xValue = d => d[0];
         vis.yValue = d => d.count;
 
         vis.line = d3.line()
-        .x(d => vis.xScale(vis.xValue(d)))
-        .y(d => vis.yScale(vis.yValue(d)));
+            .x(d => vis.xScale(vis.xValue(d)))
+            .y(d => vis.yScale(vis.yValue(d)));
 
         // Set the scale input domains
         vis.xScale.domain(d3.extent(vis.groupedData, vis.xValue));
@@ -96,13 +115,14 @@ class LineChart {
         // Add line path
         vis.chart.selectAll('.chart-line')
             .data([vis.groupedData])
-        .join('path')
+            .join('path')
             .attr('class', 'chart-line')
             .attr('d', vis.line);
-    
+
         // Update the axes
         vis.xAxisG.call(vis.xAxis);
-        vis.yAxisG.call(vis.yAxis);
+        vis.yAxisG.call(vis.yAxis)
+            .call(g => g.select('.domain').remove());
     }
 
 }
