@@ -12,3 +12,15 @@ body {
 .margin-right {
     margin-right: 30px;
 }
+
+.axis line {
+    fill: none;
+    stroke: #ddd;
+    shape-rendering: crispEdges;
+  }
+
+.chart-line {
+    stroke: steelblue;
+    fill: none;
+    stroke-width: 1.5px;
+}
