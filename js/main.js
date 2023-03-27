@@ -22,6 +22,7 @@ d3.csv('data/Sleep_Efficiency_preprocessed.csv').then(_data => {
             d.time = "02 " + d.time;
         } else {
             d.time = "01 " + d.time;
+        }
         if (d.age >= 0 && d.age <= 9) {
             d.ageGroup = '0-9';
         } else if (d.age >= 10 && d.age <= 19) {
