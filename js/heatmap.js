@@ -107,6 +107,7 @@ class Heatmap {
         // Prepare data and scales
         const vis = this;
         let values = [];
+        // Calculate group means based on category
         if (vis.category === 'caffeine') {
             vis.groupedData = d3.rollups(vis.data, v => {
                 let avg = d3.mean(v, d => d.caffeineConsumption);
@@ -126,9 +127,11 @@ class Heatmap {
                 return avg;
             }, d => d.ageGroup, d => d.sleepDuration);
         }
+        // set legend color and range
         let max = d3.max(values);
         let min = d3.min(values);
         vis.colorScale.domain([min, max]);
+        // prepare scales
         vis.yValue = d => d[0];
         vis.colorValue = d => d[1];
         vis.xValue = d => d[0];
@@ -146,6 +149,7 @@ class Heatmap {
             .data(vis.groupedData, d => d[0])
             .join('g')
             .attr('class', 'h-row')
+            .attr('age-group', d => d[0])
             .attr('transform', d => `translate(0,${vis.yScale(vis.yValue(d))})`);
 
         const cellWidth = (vis.config.width / 12 - 2);
@@ -153,7 +157,13 @@ class Heatmap {
         const cell = row.selectAll('.h-cell')
             .data(d => d[1])
             .join('rect')
-            .attr('class', 'h-cell')
+            .attr('class', function (d) {
+                if (ageDurationFilter.includes(this.parentNode.getAttribute("age-group").concat(",").concat(d[0]))) {
+                    return 'h-cell active';
+                } else {
+                    return 'h-cell';
+                }
+            })
             .attr('height', vis.yScale.bandwidth())
             .attr('width', cellWidth)
             .attr('x', d => vis.xScale(vis.xValue(d)))
@@ -163,6 +173,17 @@ class Heatmap {
                 } else {
                     return vis.colorScale(vis.colorValue(d));
                 }
+            })
+            .on('click', function (event, d) {
+                let key = this.parentNode.getAttribute("age-group").concat(",").concat(d[0]);
+                const isActive = ageDurationFilter.includes(key);
+                if (isActive) {
+                    ageDurationFilter = ageDurationFilter.filter(f => f !== key); // Remove filter
+                } else {
+                    ageDurationFilter.push(key); // Append filter
+                }
+                // TODO: update other plots
+                d3.select(this).classed('active', !isActive);
             });
         vis.xAxisG.call(vis.xAxis);
         vis.yAxisG.call(vis.yAxis);
