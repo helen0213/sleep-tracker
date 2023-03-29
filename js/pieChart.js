@@ -11,7 +11,7 @@ class PieChart {
             parentElement: _config.parentElement,
             containerWidth: 525,
             containerHeight: 525,
-            margin: {top: 25, right: 25, bottom: 25, left: 25},
+            margin: { top: 25, right: 25, bottom: 25, left: 25 },
             radius: 210
         }
         this.data = _data;
@@ -27,7 +27,7 @@ class PieChart {
 
         // Initialize scale
         vis.colorScale = d3.scaleOrdinal()
-            .domain(["REMSleepPercentage", "deepSleepPercentage", "lightSleepPercentage"])
+            .domain(["REM Sleep Percentage", "Deep Sleep Percentage", "Light Sleep Percentage"])
             .range(["#FFBC76", "#AD5A54", "#6D9E88"]);
 
         // Define size of SVG drawing area
@@ -44,20 +44,25 @@ class PieChart {
         vis.pie = d3.pie()
             .value(d => d.percentage)
             .padAngle(.01);
-        
+
         // Append group element that will contain our actual chart (see margin convention)
         vis.chart = vis.svg.append('g')
             .attr('transform', `translate(${vis.config.width / 2},${vis.config.height / 2})`);
-      
+
         vis.updateVis();
     }
 
     updateVis() {
         // Prepare data
         let vis = this;
-        vis.nestedData = [{type: "REMSleepPercentage", percentage: d3.mean(vis.data, d => d.REMSleepPercentage)},
-        {type: "deepSleepPercentage", percentage: d3.mean(vis.data, d => d.deepSleepPercentage)},
-        {type: "lightSleepPercentage", percentage: d3.mean(vis.data, d => d.lightSleepPercentage)}];
+        vis.nestedData = {
+            percent: [{ type: "REM Sleep Percentage", percentage: d3.mean(vis.data, d => d.REMSleepPercentage) },
+            { type: "Deep Sleep Percentage", percentage: d3.mean(vis.data, d => d.deepSleepPercentage) },
+            { type: "Light Sleep Percentage", percentage: d3.mean(vis.data, d => d.lightSleepPercentage) }],
+            average: [{ title: "Age", value: d3.mean(vis.data, d => d.age) },
+            { title: "Sleep Duration", value: d3.mean(vis.data, d => d.sleepDuration) },
+            { title: "Sleep Efficiency", value: d3.mean(vis.data, d => d.sleepEfficiency) }],
+        };
         vis.colorValue = d => d.data.type;
         vis.renderVis();
     }
@@ -65,24 +70,56 @@ class PieChart {
     renderVis() {
         // Bind data to visual elements
         let vis = this;
-        
-        // Add 
+
+        // Add pie chart
         vis.arcs = vis.chart.selectAll(".arc")
-            .data(vis.pie(vis.nestedData))
+            .data(vis.pie(vis.nestedData.percent))
             .enter()
             .append("path")
             .attr("fill", d => vis.colorScale(vis.colorValue(d)))
             .attr("d", vis.arc);
 
-        // ?
-        vis.arcs.selectAll(".text")
-            .data(vis.pie(vis.nestedData))
+        // Add text label on pie chart
+        vis.label = vis.chart.selectAll(".label")
+            .data(vis.pie(vis.nestedData.percent))
             .enter()
             .append("text")
             .attr("transform", d => "translate(" + vis.arc.centroid(d) + ")")
             .style("text-anchor", "middle")
             .style("font-size", 17)
-            .text(d => d.data.percentage);
-        
+            .style("font-weight", 600)
+            .attr("fill", "white")
+            .text(d => d3.format(".1f")(d.data.percentage) + "%");
+
+        // Add legend
+        vis.legend = vis.svg.selectAll(".legend")
+            .data(vis.pie(vis.nestedData.percent))
+            .enter()
+            .append("g")
+            .attr("transform", (d, i) => `translate(${vis.config.containerWidth - 150},${vis.config.containerHeight - 100 + (i * 20)})`)
+            .attr("class", "legend");
+
+        vis.legend.append("rect")
+            .attr("width", 15)
+            .attr("height", 15)
+            .attr("fill", d => vis.colorScale(vis.colorValue(d)));
+
+        vis.legend.append("text")
+            .text(d => vis.colorValue(d))
+            .style("font-size", 12)
+            .attr("y", 12)
+            .attr("x", 20);
+
+        // Add text for detailed information
+        vis.text = vis.svg.selectAll(".text")
+            .data(vis.nestedData.average)
+            .enter()
+            .append("text")
+            .attr("transform", (d, i) => `translate(${vis.config.width / 2},${vis.config.height / 2 - 40 + (i * 35)})`)
+            .style("text-anchor", "middle")
+            .style("font-size", 20)
+            .style("font-weight", 500)
+            .attr("fill", "grey")
+            .text(d => d.title + " : " + d3.format(".1f")(d.value));
     }
 }
