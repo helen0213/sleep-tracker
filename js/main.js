@@ -4,6 +4,7 @@
 
 // global objects
 let data, lineChart, pieChart, scatterPlot, heatmap;
+let individuals = [];
 
 d3.csv('data/Sleep_Efficiency_preprocessed.csv').then(_data => {
     data = _data;
