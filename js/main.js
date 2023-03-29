@@ -3,7 +3,7 @@
  */
 
 // global objects
-let data, lineChart, pieChart, bubbleChart, heatmap;
+let data, lineChart, pieChart, scatterPlot, heatmap;
 
 d3.csv('data/Sleep_Efficiency_preprocessed.csv').then(_data => {
     data = _data;
@@ -51,11 +51,11 @@ d3.csv('data/Sleep_Efficiency_preprocessed.csv').then(_data => {
     }, data);
     // pieChart.updateVis();
     //
-    // bubbleChart = new BubbleChart({
-    //     parentElement: '#bubblechart',
-    // }, data);
-    // bubbleChart.updateVis();
-    //
+    scatterPlot = new ScatterPlot({
+        parentElement: '#scatterplot',
+    }, data);
+    scatterPlot.updateVis();
+
     heatmap = new Heatmap({
         parentElement: '#heatmap',
     }, data, 'caffeine');

@@ -1,4 +1,4 @@
-class BubbleChart {
+class ScatterPlot {
 
     /**
      * Class constructor with initial configuration
