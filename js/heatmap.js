@@ -35,7 +35,7 @@ class Heatmap {
             .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
         vis.colorScale = d3.scaleSequential()
-            .interpolator(d3.interpolateYlGnBu);
+            .interpolator(d3.interpolateYlGn);
 
         vis.xScale = d3.scaleBand()
             .range([12, vis.config.width - 40]);
@@ -106,16 +106,29 @@ class Heatmap {
     updateVis() {
         // Prepare data and scales
         const vis = this;
+        let values = [];
         if (vis.category === 'caffeine') {
-            vis.groupedData = d3.rollups(vis.data, v => d3.mean(v, d => d.caffeineConsumption), d => d.ageGroup, d => d.sleepDuration);
-            vis.colorScale.domain([0, 200]);
+            vis.groupedData = d3.rollups(vis.data, v => {
+                let avg = d3.mean(v, d => d.caffeineConsumption);
+                values.push(avg);
+                return avg;
+            }, d => d.ageGroup, d => d.sleepDuration);
         } else if (vis.category === 'alcohol') {
-            vis.groupedData = d3.rollups(vis.data, v => d3.mean(v, d => d.alcoholConsumption), d => d.ageGroup, d => d.sleepDuration);
-            vis.colorScale.domain([0, 5]);
+            vis.groupedData = d3.rollups(vis.data, v => {
+                let avg = d3.mean(v, d => d.alcoholConsumption);
+                values.push(avg);
+                return avg;
+            }, d => d.ageGroup, d => d.sleepDuration);
         } else if (vis.category === 'exercise') {
-            vis.groupedData = d3.rollups(vis.data, v => d3.mean(v, d => d.exerciseFrequency), d => d.ageGroup, d => d.sleepDuration);
-            vis.colorScale.domain([0, 5]);
+            vis.groupedData = d3.rollups(vis.data, v => {
+                let avg = d3.mean(v, d => d.exerciseFrequency);
+                values.push(avg);
+                return avg;
+            }, d => d.ageGroup, d => d.sleepDuration);
         }
+        let max = d3.max(values);
+        let min = d3.min(values);
+        vis.colorScale.domain([min, max]);
         vis.yValue = d => d[0];
         vis.colorValue = d => d[1];
         vis.xValue = d => d[0];
@@ -192,7 +205,7 @@ class Heatmap {
                         .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
                         .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
                         .html(`
-              <div class='tooltip-title'>the amount of caffeine consumed in the 24 hours prior to bedtime (in mg)</div>
+              <div class='tooltip-title'>the average amount of caffeine consumed in the 24 hours prior to bedtime (in mg)</div>
             `);
                 } else if (vis.category === 'alcohol') {
                     d3.select('#tooltip')
@@ -200,7 +213,7 @@ class Heatmap {
                         .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
                         .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
                         .html(`
-              <div class='tooltip-title'>the amount of alcohol consumed in the 24 hours prior to bedtime (in oz)</div>
+              <div class='tooltip-title'>the average amount of alcohol consumed in the 24 hours prior to bedtime (in oz)</div>
             `);
                 } else if (vis.category === 'exercise') {
                     d3.select('#tooltip')
@@ -208,7 +221,7 @@ class Heatmap {
                         .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
                         .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
                         .html(`
-              <div class='tooltip-title'>the number of times the test subject exercises each week</div>
+              <div class='tooltip-title'>the average number of times the test subject exercises each week</div>
             `);
                 }
             })

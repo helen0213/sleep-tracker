@@ -41,7 +41,7 @@ label {
 
 input:checked + label{
     color: #332f35;
-    background: #ADD8E6;
+    background: #5DBB63;
 }
 
 label + input + label {
