@@ -54,6 +54,13 @@ label + input + label {
     border-radius: 10px;
     overflow: hidden;
 }
+/* ScatterPlot*/
+.point {
+    fill: #69b3a2;
+}
+.point.active {
+    fill: #4c00b0;
+}
 
 /* Tooltip */
 #tooltip {

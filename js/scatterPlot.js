@@ -107,7 +107,15 @@ class ScatterPlot {
             .attr('r', 4)
             .attr('cy', d => vis.yScale(vis.yValue(d)))
             .attr('cx', d => vis.xScale(vis.xValue(d)))
-            .style("fill", "#69b3a2");
+            .on('click', function(event, d) {
+                const isActive = individuals.includes(d.key);
+                if (isActive) {
+                    individuals = individuals.filter(f => f !== d.key); // Remove filter
+                } else {
+                    individuals.push(d.key); // Append filter
+                }
+                d3.select(this).classed('active', !isActive); // Add class to style active filters with CSS
+            });
 
         // Update the axes/gridlines
         // We use the second .call() to remove the axis and just show gridlines
