@@ -9,10 +9,10 @@ class PieChart {
         // TODO: adjust config according to the design and add parameters if needed
         this.config = {
             parentElement: _config.parentElement,
-            containerWidth: 700,
-            containerHeight: 700,
+            containerWidth: 525,
+            containerHeight: 525,
             margin: {top: 25, right: 25, bottom: 25, left: 25},
-            radius: 300
+            radius: 210
         }
         this.data = _data;
         this.initVis();

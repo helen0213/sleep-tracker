@@ -42,16 +42,11 @@ d3.csv('data/Sleep_Efficiency_preprocessed.csv').then(_data => {
     });
 
     // TODO: commented out to avoid errors, uncomment for testing purpose
-    lineChart = new LineChart({
-        parentElement: '#linechart',
-    }, data);
-    // lineChart.updateVis();
-    //
     pieChart = new PieChart({
         parentElement: '#piechart',
     }, data);
-    // pieChart.updateVis();
-    //
+    pieChart.updateVis();
+
     scatterPlot = new ScatterPlot({
         parentElement: '#scatterplot',
     }, data);
