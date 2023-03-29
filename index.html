@@ -3,39 +3,47 @@
 <head>
     <title>D3 Project Starter Template</title>
     <meta charset="UTF-8">
-    <link rel="icon" href="data:;base64,iVBORwOKGO=" />
+    <link rel="icon" href="data:;base64,iVBORwOKGO="/>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>    
-    <!-- Add HTML content, SVG drawing area, ... -->
-    <!-- TODO: relocate components later-->
+<body>
+<!-- Add HTML content, SVG drawing area, ... -->
+<!-- TODO: relocate components later-->
 
-    <div class="container">
-        <div class="inner-container">
-            <div>
-                <svg id="linechart" class="margin-right"></svg>
-            </div>
-            <div>
-                <svg id="heatmap"></svg>
-            </div>
+<div class="container">
+    <div class="inner-container">
+        <div>
+            <svg id="linechart" class="margin-right"></svg>
         </div>
-        <div class="inner-container">
-            <div>
-                <svg id="piechart" class="margin-right"></svg>
-            </div>
-            <div>
-                <svg id="bubblechart"></svg>
-            </div>
+        <div>
+            <form>
+                <div class="radio-group">
+                    <input type="radio" id="caffeine" name="selector" checked><label for="caffeine">Caffeine consumption</label><input
+                        type="radio" id="alcohol" name="selector"><label for="alcohol">Alcohol consumption</label><input
+                        type="radio" id="exercise" name="selector"><label for="exercise">Exercise frequency</label>
+                </div>
+            </form>
+            <svg id="heatmap"></svg>
+            <div id="tooltip"></div>
         </div>
     </div>
-    
-    <!-- D3 bundle -->
-    <script src="js/d3.v6.min.js"></script>
+    <div class="inner-container">
+        <div>
+            <svg id="piechart" class="margin-right"></svg>
+        </div>
+        <div>
+            <svg id="bubblechart"></svg>
+        </div>
+    </div>
+</div>
 
-    <!-- Our JS code -->
-    <script src="js/heatmap.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/linechart.js"></script>
-    <script src="js/piechart.js"></script>
+<!-- D3 bundle -->
+<script src="js/d3.v6.min.js"></script>
+
+<!-- Our JS code -->
+<script src="js/heatmap.js"></script>
+<script src="js/main.js"></script>
+<script src="js/linechart.js"></script>
+<script src="js/piechart.js"></script>
 </body>
 </html>

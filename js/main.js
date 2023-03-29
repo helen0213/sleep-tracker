@@ -58,7 +58,7 @@ d3.csv('data/Sleep_Efficiency_preprocessed.csv').then(_data => {
     //
     heatmap = new Heatmap({
         parentElement: '#heatmap',
-    }, data);
+    }, data, 'caffeine');
     heatmap.updateVis();
 
     // TODO: take a look at variables after transformation first
@@ -70,3 +70,8 @@ d3.csv('data/Sleep_Efficiency_preprocessed.csv').then(_data => {
  * - filter data
  * - listen to events and update views
  */
+
+d3.selectAll("input").on("change", function(){
+    heatmap.category = this.id;
+    heatmap.updateVis();
+});
