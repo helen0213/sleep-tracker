@@ -120,6 +120,6 @@ class PieChart {
             .style("font-size", 20)
             .style("font-weight", 500)
             .attr("fill", "grey")
-            .text(d => d.title + " : " + d3.format(".1f")(d.value));
+            .text(d => "Average " + d.title + " : " + d3.format(".1f")(d.value));
     }
 }

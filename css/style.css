@@ -17,12 +17,6 @@ body {
     fill: none;
     stroke: #ddd;
     shape-rendering: crispEdges;
-  }
-
-.chart-line {
-    stroke: steelblue;
-    fill: none;
-    stroke-width: 1.5px;
 }
 
 input[type=radio] {
