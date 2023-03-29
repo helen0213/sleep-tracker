@@ -5,7 +5,7 @@ class Heatmap {
      * @param {Object}
      * @param {Array}
      */
-    constructor(_config, _data) {
+    constructor(_config, _data, _cat) {
         // TODO: adjust config according to the design and add parameters if needed
         this.config = {
             parentElement: _config.parentElement,
@@ -13,9 +13,11 @@ class Heatmap {
             containerHeight: 380,
             margin: {top: 15, right: 15, bottom: 20, left: 25},
             legendWidth: 160,
-            legendBarHeight: 10
+            legendBarHeight: 10,
+            tooltipPadding: _config.tooltipPadding || 15
         }
         this.data = _data;
+        this.category = _cat;
         this.initVis();
     }
 
@@ -33,13 +35,13 @@ class Heatmap {
             .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
         vis.colorScale = d3.scaleSequential()
-            .interpolator(d3.interpolateBlues);
+            .interpolator(d3.interpolateYlGnBu);
 
         vis.xScale = d3.scaleBand()
-            .range([10, vis.config.width - 40]);
+            .range([12, vis.config.width - 40]);
 
         vis.yScale = d3.scaleBand()
-            .range([0, vis.config.height])
+            .range([0, vis.config.height-20])
             .paddingInner(0.05);
 
         vis.xAxis = d3.axisBottom(vis.xScale)
@@ -53,12 +55,28 @@ class Heatmap {
 
         vis.xAxisG = vis.chartArea.append('g')
             .attr('class', 'axis x-axis')
-            .attr('transform', `translate(0,${vis.config.height})`);
+            .attr('transform', `translate(0,${vis.config.height-20})`);
 
         // Append y-axis group
         vis.yAxisG = vis.chartArea.append('g')
             .attr('class', 'axis y-axis')
             .attr('transform', `translate(10,0)`);
+
+        // Append both axis titles
+        vis.chartArea.append('text')
+            .attr('class', 'axis-title')
+            .attr('y', vis.config.height)
+            .attr('x', vis.config.width)
+            .attr('dy', '.71em')
+            .style('text-anchor', 'end')
+            .text('Sleep duration (h)');
+
+        vis.chartArea.append('text')
+            .attr('class', 'axis-title')
+            .attr('x', -15)
+            .attr('y', -13)
+            .attr('dy', '.71em')
+            .text('Age group');
 
         // prep for legend
         vis.legend = vis.svg.append('g')
@@ -88,11 +106,19 @@ class Heatmap {
     updateVis() {
         // Prepare data and scales
         const vis = this;
-        vis.groupedData = d3.rollups(vis.data, v => d3.mean(v, d => d.sleepEfficiency), d => d.ageGroup, d => d.sleepDuration);
+        if (vis.category === 'caffeine') {
+            vis.groupedData = d3.rollups(vis.data, v => d3.mean(v, d => d.caffeineConsumption), d => d.ageGroup, d => d.sleepDuration);
+            vis.colorScale.domain([0, 200]);
+        } else if (vis.category === 'alcohol') {
+            vis.groupedData = d3.rollups(vis.data, v => d3.mean(v, d => d.alcoholConsumption), d => d.ageGroup, d => d.sleepDuration);
+            vis.colorScale.domain([0, 5]);
+        } else if (vis.category === 'exercise') {
+            vis.groupedData = d3.rollups(vis.data, v => d3.mean(v, d => d.exerciseFrequency), d => d.ageGroup, d => d.sleepDuration);
+            vis.colorScale.domain([0, 5]);
+        }
         vis.yValue = d => d[0];
         vis.colorValue = d => d[1];
         vis.xValue = d => d[0];
-        vis.colorScale.domain([0, 1]);
         vis.xScale.domain([5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10]);
         vis.yScale.domain(vis.groupedData.map(vis.yValue).sort(d3.ascending));
         vis.renderVis();
@@ -108,14 +134,6 @@ class Heatmap {
             .join('g')
             .attr('class', 'h-row')
             .attr('transform', d => `translate(0,${vis.yScale(vis.yValue(d))})`);
-
-        // Append row label (y-axis)
-        // rowEnter.append('text')
-        //     .attr('class', 'h-label')
-        //     .attr('text-anchor', 'end')
-        //     .attr('dy', '0.85em')
-        //     .attr('x', -8)
-        //     .text(vis.yValue);
 
         const cellWidth = (vis.config.width / 12 - 2);
 
@@ -133,23 +151,6 @@ class Heatmap {
                     return vis.colorScale(vis.colorValue(d));
                 }
             });
-
-        // TODO: deal with N/A
-        // const cellNa = row.merge(rowEnter).selectAll('.h-cell-na')
-        //     .data(d => {
-        //         console.log(d);
-        //         d[1].filter(k => k.value === null)
-        //     });
-        //
-        // const cellNaEnter = cellNa.enter().append('line')
-        //     .attr('class', 'h-cell-na');
-        //
-        // cellNaEnter.merge(cellNa)
-        //     .attr('x1', d => vis.xScale(vis.xValue(d)))
-        //     .attr('x2', d => vis.xScale(vis.xValue(d)) + cellWidth)
-        //     .attr('y1', vis.yScale.bandwidth())
-        //     .attr('y2', 0);
-
         vis.xAxisG.call(vis.xAxis);
         vis.yAxisG.call(vis.yAxis);
     }
@@ -181,6 +182,39 @@ class Heatmap {
             parseFloat(extent[1] / 4 * 3),
             extent[1]
         ]);
+
+        // Tooltip event listeners
+        vis.legend
+            .on('mouseover', (event) => {
+                if (vis.category === 'caffeine') {
+                    d3.select('#tooltip')
+                        .style('display', 'block')
+                        .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
+                        .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
+                        .html(`
+              <div class='tooltip-title'>the amount of caffeine consumed in the 24 hours prior to bedtime (in mg)</div>
+            `);
+                } else if (vis.category === 'alcohol') {
+                    d3.select('#tooltip')
+                        .style('display', 'block')
+                        .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
+                        .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
+                        .html(`
+              <div class='tooltip-title'>the amount of alcohol consumed in the 24 hours prior to bedtime (in oz)</div>
+            `);
+                } else if (vis.category === 'exercise') {
+                    d3.select('#tooltip')
+                        .style('display', 'block')
+                        .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
+                        .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
+                        .html(`
+              <div class='tooltip-title'>the number of times the test subject exercises each week</div>
+            `);
+                }
+            })
+            .on('mouseleave', () => {
+                d3.select('#tooltip').style('display', 'none');
+            });
 
         // Update legend axis
         vis.xLegendAxisG.call(vis.xLegendAxis);
