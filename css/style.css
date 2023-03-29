@@ -62,6 +62,17 @@ label + input + label {
     fill: #4c00b0;
 }
 
+/* heatmap */
+.h-cell:hover {
+    stroke: #ED7117;
+    stroke-width: 2px;
+}
+
+.h-cell.active {
+    stroke: #ED7117;
+    stroke-width: 2px;
+}
+
 /* Tooltip */
 #tooltip {
     position: absolute;
