@@ -51,9 +51,12 @@ label + input + label {
 /* ScatterPlot*/
 .point {
     fill: #69b3a2;
+    fill-opacity: 30%;
 }
 .point.active {
-    fill: #4c00b0;
+    fill: #ff0000;
+    fill-opacity: 60%;
+
 }
 
 /* heatmap */

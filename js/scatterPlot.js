@@ -9,7 +9,7 @@ class ScatterPlot {
         // TODO: adjust config according to the design and add parameters if needed
         this.config = {
             parentElement: _config.parentElement,
-            containerWidth: 600,
+            containerWidth: 1000,
             containerHeight: 500,
             margin: {top: 15, right: 15, bottom: 20, left: 30}
         }
@@ -104,15 +104,15 @@ class ScatterPlot {
             .data(vis.data)
             .join('circle')
             .attr('class', 'point')
-            .attr('r', 4)
+            .attr('r', 6)
             .attr('cy', d => vis.yScale(vis.yValue(d)))
             .attr('cx', d => vis.xScale(vis.xValue(d)))
             .on('click', function(event, d) {
-                const isActive = individuals.includes(d.key);
+                const isActive = individuals.includes(d.id);
                 if (isActive) {
-                    individuals = individuals.filter(f => f !== d.key); // Remove filter
+                    individuals = individuals.filter(f => f !== d.id); // Remove filter
                 } else {
-                    individuals.push(d.key); // Append filter
+                    individuals.push(d.id); // Append filter
                 }
                 d3.select(this).classed('active', !isActive); // Add class to style active filters with CSS
             });
