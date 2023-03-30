@@ -175,14 +175,28 @@ class Heatmap {
                 }
             })
             .on('click', function (event, d) {
-                let key = this.parentNode.getAttribute("age-group").concat(",").concat(d[0]);
+                let ageGroup = this.parentNode.getAttribute("age-group");
+                let sleepDuration = d[0];
+                let key = ageGroup.concat(",").concat(sleepDuration);
                 const isActive = ageDurationFilter.includes(key);
                 if (isActive) {
                     ageDurationFilter = ageDurationFilter.filter(f => f !== key); // Remove filter
                 } else {
                     ageDurationFilter.push(key); // Append filter
                 }
-                // TODO: update other plots
+                let points = vis.data.filter(d => (d.ageGroup === ageGroup && d.sleepDuration === sleepDuration));
+                points.map((d) => {
+                    const isActive = individuals.includes(d.id);
+                    if (isActive) {
+                        individuals = individuals.filter(f => f !== d.id); // Remove filter
+                    } else {
+                        individuals.push(d.id); // Append filter
+                    }
+                    d3.select(this).classed('active', !isActive); // Add class to style active filters with CSS
+                })
+                // update other charts
+                scatterPlot.updateVis();
+                pieChart.updateVis();
                 d3.select(this).classed('active', !isActive);
             });
         vis.xAxisG.call(vis.xAxis);
