@@ -9,10 +9,10 @@ class Heatmap {
         // TODO: adjust config according to the design and add parameters if needed
         this.config = {
             parentElement: _config.parentElement,
-            containerWidth: 600,
+            containerWidth: 800,
             containerHeight: 380,
             margin: {top: 15, right: 15, bottom: 20, left: 25},
-            legendWidth: 160,
+            legendWidth: 150,
             legendBarHeight: 10,
             tooltipPadding: _config.tooltipPadding || 15
         }
@@ -35,13 +35,13 @@ class Heatmap {
             .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
         vis.colorScale = d3.scaleSequential()
-            .interpolator(d3.interpolateYlGn);
+            .interpolator(d3.interpolateRgb("#FFFACA", "green"));
 
         vis.xScale = d3.scaleBand()
-            .range([12, vis.config.width - 40]);
+            .range([22, vis.config.width - 40]);
 
         vis.yScale = d3.scaleBand()
-            .range([0, vis.config.height-20])
+            .range([0, vis.config.height-25])
             .paddingInner(0.05);
 
         vis.xAxis = d3.axisBottom(vis.xScale)
@@ -55,17 +55,17 @@ class Heatmap {
 
         vis.xAxisG = vis.chartArea.append('g')
             .attr('class', 'axis x-axis')
-            .attr('transform', `translate(0,${vis.config.height-20})`);
+            .attr('transform', `translate(0,${vis.config.height-22})`);
 
         // Append y-axis group
         vis.yAxisG = vis.chartArea.append('g')
             .attr('class', 'axis y-axis')
-            .attr('transform', `translate(10,0)`);
+            .attr('transform', `translate(20,5)`);
 
         // Append both axis titles
         vis.chartArea.append('text')
             .attr('class', 'axis-title')
-            .attr('y', vis.config.height)
+            .attr('y', vis.config.height+5)
             .attr('x', vis.config.width)
             .attr('dy', '.71em')
             .style('text-anchor', 'end')
@@ -73,7 +73,7 @@ class Heatmap {
 
         vis.chartArea.append('text')
             .attr('class', 'axis-title')
-            .attr('x', -15)
+            .attr('x', -22)
             .attr('y', -13)
             .attr('dy', '.71em')
             .text('Age group');
@@ -95,7 +95,7 @@ class Heatmap {
 
         vis.xLegendAxis = d3.axisBottom(vis.xLegendScale)
             .tickSize(vis.config.legendBarHeight + 3)
-            .tickFormat(d3.format('.2f'));
+            .tickFormat(d3.format('.1f'));
 
         vis.xLegendAxisG = vis.legend.append('g')
             .attr('class', 'axis x-axis legend-axis');

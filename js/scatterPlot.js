@@ -9,7 +9,7 @@ class ScatterPlot {
         // TODO: adjust config according to the design and add parameters if needed
         this.config = {
             parentElement: _config.parentElement,
-            containerWidth: 1000,
+            containerWidth: 800,
             containerHeight: 500,
             margin: {top: 15, right: 15, bottom: 20, left: 30}
         }
@@ -27,15 +27,15 @@ class ScatterPlot {
 
         // Initialize scales
         vis.xScale = d3.scaleLinear()
-            .range([0, vis.width]);
+            .range([10, vis.width]);
 
         vis.yScale = d3.scaleLinear()
-            .range([vis.height, 0]);
+            .range([vis.height-10, 10]);
 
         // Initialize axes
         vis.xAxis = d3.axisBottom(vis.xScale)
             .ticks(15)
-            .tickSize(-vis.height - 10)
+            .tickSize(-vis.height + 10)
             .tickPadding(10);
 
         vis.yAxis = d3.axisLeft(vis.yScale)
@@ -56,11 +56,12 @@ class ScatterPlot {
         // Append empty x-axis group and move it to the bottom of the chart
         vis.xAxisG = vis.chart.append('g')
             .attr('class', 'axis x-axis')
-            .attr('transform', `translate(0,${vis.height})`);
+            .attr('transform', `translate(0,${vis.height-10})`);
 
         // Append y-axis group
         vis.yAxisG = vis.chart.append('g')
-            .attr('class', 'axis y-axis');
+            .attr('class', 'axis y-axis')
+            .attr('transform', `translate(10,0)`);
 
         // Append both axis titles
         vis.chart.append('text')
@@ -104,7 +105,7 @@ class ScatterPlot {
             .data(vis.data)
             .join('circle')
             .attr('class', 'point')
-            .attr('r', 6)
+            .attr('r', 7)
             .attr('cy', d => vis.yScale(vis.yValue(d)))
             .attr('cx', d => vis.xScale(vis.xValue(d)))
             .on('click', function(event, d) {

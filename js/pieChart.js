@@ -9,7 +9,7 @@ class PieChart {
         // TODO: adjust config according to the design and add parameters if needed
         this.config = {
             parentElement: _config.parentElement,
-            containerWidth: 525,
+            containerWidth: 600,
             containerHeight: 525,
             margin: { top: 25, right: 25, bottom: 25, left: 25 },
             radius: 210
@@ -96,19 +96,20 @@ class PieChart {
             .data(vis.pie(vis.nestedData.percent))
             .enter()
             .append("g")
-            .attr("transform", (d, i) => `translate(${vis.config.containerWidth - 150},${vis.config.containerHeight - 100 + (i * 20)})`)
+            .attr("transform", (d, i) => `translate(${vis.config.containerWidth - 210},${vis.config.containerHeight - 100 + (i * 20)})`)
             .attr("class", "legend");
 
         vis.legend.append("rect")
-            .attr("width", 15)
-            .attr("height", 15)
+            .attr("width", 18)
+            .attr("height", 18)
             .attr("fill", d => vis.colorScale(vis.colorValue(d)));
 
         vis.legend.append("text")
             .text(d => vis.colorValue(d))
-            .style("font-size", 12)
+            .style("font-size", 15)
+            .attr("fill", "#FFFACA")
             .attr("y", 12)
-            .attr("x", 20);
+            .attr("x", 22);
 
         // Add text for detailed information
         vis.text = vis.svg.selectAll(".text")
@@ -119,7 +120,7 @@ class PieChart {
             .style("text-anchor", "middle")
             .style("font-size", 20)
             .style("font-weight", 500)
-            .attr("fill", "grey")
+            .attr("fill", "#FFFACA")
             .text(d => "Average " + d.title + " : " + d3.format(".1f")(d.value));
     }
 }
