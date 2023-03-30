@@ -104,7 +104,13 @@ class ScatterPlot {
         const circles = vis.chart.selectAll('.point')
             .data(vis.data)
             .join('circle')
-            .attr('class', 'point')
+            .attr('class', function (d) {
+                if (individuals.includes(d.id)) {
+                    return 'point active';
+                } else {
+                    return 'point';
+                }
+            })
             .attr('r', 7)
             .attr('cy', d => vis.yScale(vis.yValue(d)))
             .attr('cx', d => vis.xScale(vis.xValue(d)))
