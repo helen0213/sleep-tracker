@@ -186,13 +186,15 @@ class Heatmap {
                 }
                 let points = vis.data.filter(d => (d.ageGroup === ageGroup && d.sleepDuration === sleepDuration));
                 points.map((d) => {
-                    const isActive = individuals.includes(d.id);
-                    if (isActive) {
+                    const isPresent = individuals.includes(d.id);
+                    if (isActive && isPresent) {
                         individuals = individuals.filter(f => f !== d.id); // Remove filter
-                    } else {
+                        d3.select(this).classed('active', !isActive);
+                    } else if (!isActive && !isPresent){
                         individuals.push(d.id); // Append filter
+                        d3.select(this).classed('active', !isActive);
                     }
-                    d3.select(this).classed('active', !isActive); // Add class to style active filters with CSS
+                     // Add class to style active filters with CSS
                 })
                 // update other charts
                 scatterPlot.updateVis();
