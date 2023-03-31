@@ -121,107 +121,28 @@ class ScatterPlot {
                 let sleepDuration = d.sleepDuration;
                 let id = d.id;
                 let key = ageGroup.concat(",").concat(sleepDuration);
-                let interact = ageGroup.concat(",").concat(sleepDuration).concat(id);
 
                 const isActive = individuals.includes(d.id);
                 if (isActive) {
                     individuals = individuals.filter(f => f !== d.id); // Remove filter
                 } else {
                     individuals.push(d.id); // Append filter
-                    // ageDurationFilter.push(key);
-
                 }
 
                 let group = vis.group.get(d.ageGroup).get(d.sleepDuration);
                 let isAgeDurationActive = ageDurationFilter.includes(key);
                 let pointsIncluded = group.filter(d => individuals.includes(d.id));
 
+                // Filter data for heatmap
                 if (isAgeDurationActive && isActive) {
                     if (pointsIncluded.length === 0) {
-                        ageDurationFilter = ageDurationFilter.filter(f => f !== key); // Remove filter
+                        ageDurationFilter = ageDurationFilter.filter(f => f !== key);
                         d3.select(this).classed('active', !isActive);
                     }
                 } else if (!isAgeDurationActive && !isActive){
-                    ageDurationFilter.push(key); // Append filter
+                    ageDurationFilter.push(key);
                     d3.select(this).classed('active', !isActive);
                 }
-
-                // let plaid = vis.data.filter(d => (d.ageGroup === ageGroup && d.sleepDuration === sleepDuration));
-                // plaid.map((d) => {
-                //     let isActive_hp = true;
-                //     // ageDurationFilter.push(key);
-                //     // console.log(ageDurationFilter);
-                //     // if(isActive){
-                //     //     ageDurationFilter = ageDurationFilter.filter(f => f !== key); // Remove filter
-                //     //     console.log(ageDurationFilter + " after remove");
-                //     //     if(!ageDurationFilter.includes(key)){
-                //     //         isActive_hp = false;
-                //     //     }
-                //     // }
-                //
-                //     if(!isActive){
-                //         // sp_hp.push(interact);
-                //         ageDurationFilter.push(key);
-                //         // console.log(ageDurationFilter + " push");
-                //     } else {
-                //         // isActive_hp = false;
-                //         ageDurationFilter = ageDurationFilter.filter(f => f !== key); // Remove filter
-                //         // console.log(ageDurationFilter + " remove");
-                //
-                //         if(!ageDurationFilter.includes(key)){
-                //             console.log("check");
-                //             isActive_hp = false;
-                //         }
-                //     }
-                //     d3.select(this).classed('active', isActive_hp); // Add class to style active filters with CSS
-                //
-                //
-                //     // let isActive_hp = true;
-                //     // console.log(key);
-                //     // console.log(ageDurationFilter + "before");
-                //     // if(!ageDurationFilter.includes(key)){
-                //     //     ageDurationFilter.push(key); // Append filter
-                //     // }
-                //     // console.log(ageDurationFilter + "after");
-                //     //
-                //     // if(d.ageGroup == '0-9'){
-                //     //     if(age09 == 0){
-                //     //         ageDurationFilter = ageDurationFilter.filter(f => f !== key); // Remove filter
-                //     //         isActive_hp = false;
-                //     //     }
-                //     // } else if(d.ageGroup == '10-19'){
-                //     //     if(age1019 == 0){
-                //     //         ageDurationFilter = ageDurationFilter.filter(f => f !== key); // Remove filter
-                //     //         isActive_hp = false;
-                //     //     }
-                //     // } else if(d.ageGroup == '20-29'){
-                //     //     if(age2029 == 0){
-                //     //         ageDurationFilter = ageDurationFilter.filter(f => f !== key); // Remove filter
-                //     //         isActive_hp = false;
-                //     //     }
-                //     // } else if(d.ageGroup == '30-39'){
-                //     //     console.log("3039"+age3039);
-                //     //     if(age3039 == 0){
-                //     //         ageDurationFilter = ageDurationFilter.filter(f => f !== key); // Remove filter
-                //     //         isActive_hp = false;
-                //     //     }
-                //     // } else if(d.ageGroup == '40-49'){
-                //     //     if(age4049 == 0){
-                //     //         ageDurationFilter = ageDurationFilter.filter(f => f !== key); // Remove filter
-                //     //         isActive_hp = false;
-                //     //     }
-                //     // } else if(d.ageGroup == '50-59'){
-                //     //     if(age5059 == 0){
-                //     //         ageDurationFilter = ageDurationFilter.filter(f => f !== key); // Remove filter
-                //     //         isActive_hp = false;
-                //     //     }
-                //     // } else if(d.ageGroup == '60-69'){
-                //     //     if(age6069 == 0){
-                //     //         ageDurationFilter = ageDurationFilter.filter(f => f !== key); // Remove filter
-                //     //         isActive_hp = false;
-                //     //     }
-                //     // }
-                // })
 
                 // update other charts
                 heatmap.updateVis();
