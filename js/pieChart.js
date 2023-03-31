@@ -81,9 +81,9 @@ class PieChart {
     renderVis() {
         // Bind data to visual elements
         let vis = this;
-
+        
         // Add pie chart
-        vis.arcs = vis.chart.selectAll(".arc")
+        const arcs = vis.chart.selectAll(".arc")
             .data(vis.pie(vis.nestedData.percent))
             .enter()
             .append("path")
@@ -91,7 +91,7 @@ class PieChart {
             .attr("d", vis.arc);
 
         // Add text label on pie chart
-        vis.label = vis.chart.selectAll(".label")
+        const label = vis.chart.selectAll(".label")
             .data(vis.pie(vis.nestedData.percent))
             .enter()
             .append("text")
@@ -102,29 +102,8 @@ class PieChart {
             .attr("fill", "white")
             .text(d => d3.format(".1f")(d.data.percentage) + "%");
 
-        // Add legend
-        vis.legend = vis.svg.selectAll(".legend")
-            .data(vis.pie(vis.nestedData.percent))
-            .enter()
-            .append("g")
-            .attr("transform", (d, i) => `translate(${vis.config.containerWidth - 210},${vis.config.containerHeight - 100 + (i * 22)})`)
-            .attr("class", "legend");
-
-        vis.legend.append("rect")
-            .attr("width", 18)
-            .attr("height", 18)
-            .attr("rx", 4)
-            .attr("fill", d => vis.colorScale(vis.typeValue(d)));
-
-        vis.legend.append("text")
-            .text(d => vis.typeValue(d))
-            .style("font-size", 15)
-            .attr("fill", "#FFFACA")
-            .attr("y", 12)
-            .attr("x", 22);
-
         // Add text for detailed information
-        vis.text = vis.svg.selectAll(".text")
+        const text = vis.svg.selectAll(".text")
             .data(vis.nestedData.average)
             .enter()
             .append("text")
@@ -135,8 +114,29 @@ class PieChart {
             .attr("fill", "#FFFACA")
             .text(d => "Average " + d.title + " : " + d3.format(".1f")(d.value));
 
+        // Add legend
+        const legend = vis.svg.selectAll(".legend")
+            .data(vis.pie(vis.nestedData.percent))
+            .enter()
+            .append("g")
+            .attr("transform", (d, i) => `translate(${vis.config.containerWidth - 210},${vis.config.containerHeight - 100 + (i * 22)})`)
+            .attr("class", "legend");
+
+        legend.append("rect")
+            .attr("width", 18)
+            .attr("height", 18)
+            .attr("rx", 4)
+            .attr("fill", d => vis.colorScale(vis.typeValue(d)));
+
+        legend.append("text")
+            .text(d => vis.typeValue(d))
+            .style("font-size", 15)
+            .attr("fill", "#FFFACA")
+            .attr("y", 12)
+            .attr("x", 22);
+
         // Tooltip event listeners
-        vis.legend.on('mouseover', (event, d) => {
+        legend.on('mouseover', (event, d) => {
             d3.select('#tooltip')
                 .style('display', 'block')
                 .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
