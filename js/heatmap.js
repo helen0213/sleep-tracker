@@ -178,6 +178,7 @@ class Heatmap {
                 let ageGroup = this.parentNode.getAttribute("age-group");
                 let sleepDuration = d[0];
                 let key = ageGroup.concat(",").concat(sleepDuration);
+
                 const isActive = ageDurationFilter.includes(key);
                 if (isActive) {
                     ageDurationFilter = ageDurationFilter.filter(f => f !== key); // Remove filter
