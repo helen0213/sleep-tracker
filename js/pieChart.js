@@ -85,16 +85,16 @@ class PieChart {
         // Add pie chart
         const arcs = vis.chart.selectAll(".arc")
             .data(vis.pie(vis.nestedData.percent))
-            .enter()
-            .append("path")
+            .join('path')
+            .attr('class', 'arc')
             .attr("fill", d => vis.colorScale(vis.typeValue(d)))
             .attr("d", vis.arc);
 
         // Add text label on pie chart
         const label = vis.chart.selectAll(".label")
             .data(vis.pie(vis.nestedData.percent))
-            .enter()
-            .append("text")
+            .join("text")
+            .attr('class', 'label')
             .attr("transform", d => "translate(" + vis.arc.centroid(d) + ")")
             .style("text-anchor", "middle")
             .style("font-size", 17)
@@ -105,8 +105,8 @@ class PieChart {
         // Add text for detailed information
         const text = vis.svg.selectAll(".text")
             .data(vis.nestedData.average)
-            .enter()
-            .append("text")
+            .join("text")
+            .attr('class', 'text')
             .attr("transform", (d, i) => `translate(${vis.config.width / 2},${vis.config.height / 2 - 40 + (i * 35)})`)
             .style("text-anchor", "middle")
             .style("font-size", 20)
@@ -117,8 +117,8 @@ class PieChart {
         // Add legend
         const legend = vis.svg.selectAll(".legend")
             .data(vis.pie(vis.nestedData.percent))
-            .enter()
-            .append("g")
+            .join("g")
+            .attr('class', 'legend')
             .attr("transform", (d, i) => `translate(${vis.config.containerWidth - 210},${vis.config.containerHeight - 100 + (i * 22)})`)
             .attr("class", "legend");
 
