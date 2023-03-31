@@ -1,5 +1,5 @@
 class PieChart {
-    //https://medium.com/javarevisited/create-a-pie-or-doughnut-chart-using-d3-js-7d4a1d590420
+    // Definition of sleep type from wikipidia
     /**
      * Class constructor with initial configuration
      * @param {Object}
@@ -12,7 +12,8 @@ class PieChart {
             containerWidth: 600,
             containerHeight: 525,
             margin: { top: 25, right: 25, bottom: 25, left: 25 },
-            radius: 210
+            radius: 210,
+            tooltipPadding: _config.tooltipPadding || 15
         }
         this.data = _data;
         this.initVis();
@@ -25,9 +26,15 @@ class PieChart {
         vis.config.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
         vis.config.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
 
-        // Initialize scale
+        // Initialize scales
+        vis.tooltipScale = d3.scaleOrdinal()
+            .domain(["Rapid Eye Movement Sleep", "Deep Sleep", "Light Sleep"])
+            .range(["Rapid eye movement sleep (REM sleep) is a unique phase of sleep in mammals and birds, characterized by random rapid movement of the eyes, accompanied by low muscle tone throughout the body, and the propensity of the sleeper to dream vividly.",
+                "Slow-wave sleep, often referred to as deep sleep, consists of stage three of non-rapid eye movement sleep.",
+                "Non-rapid eye movement sleep, also known as light sleep, is unlike REM sleep, there is usually little or no eye movement during these stages. Dreaming occurs during both sleep states, and muscles are not paralyzed as in REM sleep."]);
+
         vis.colorScale = d3.scaleOrdinal()
-            .domain(["REM Sleep Percentage", "Deep Sleep Percentage", "Light Sleep Percentage"])
+            .domain(["Rapid Eye Movement Sleep", "Deep Sleep", "Light Sleep"])
             .range(["#FFBC76", "#AD5A54", "#6D9E88"]);
 
         // Define size of SVG drawing area
@@ -55,15 +62,19 @@ class PieChart {
     updateVis() {
         // Prepare data
         let vis = this;
+        vis.filteredData = vis.data.filter(d => individuals.includes(d.id));
+        if (individuals.length == 0) {
+            vis.filteredData = vis.data;
+        }
         vis.nestedData = {
-            percent: [{ type: "REM Sleep Percentage", percentage: d3.mean(vis.data, d => d.REMSleepPercentage) },
-            { type: "Deep Sleep Percentage", percentage: d3.mean(vis.data, d => d.deepSleepPercentage) },
-            { type: "Light Sleep Percentage", percentage: d3.mean(vis.data, d => d.lightSleepPercentage) }],
-            average: [{ title: "Age", value: d3.mean(vis.data, d => d.age) },
-            { title: "Sleep Duration", value: d3.mean(vis.data, d => d.sleepDuration) },
-            { title: "Sleep Efficiency", value: d3.mean(vis.data, d => d.sleepEfficiency) }],
+            percent: [{ type: "Rapid Eye Movement Sleep", percentage: d3.mean(vis.filteredData, d => d.REMSleepPercentage) },
+            { type: "Deep Sleep", percentage: d3.mean(vis.filteredData, d => d.deepSleepPercentage) },
+            { type: "Light Sleep", percentage: d3.mean(vis.filteredData, d => d.lightSleepPercentage) }],
+            average: [{ title: "Age", value: d3.mean(vis.filteredData, d => d.age) },
+            { title: "Sleep Duration", value: d3.mean(vis.filteredData, d => d.sleepDuration) },
+            { title: "Sleep Efficiency", value: d3.mean(vis.filteredData, d => d.sleepEfficiency) }],
         };
-        vis.colorValue = d => d.data.type;
+        vis.typeValue = d => d.data.type;
         vis.renderVis();
     }
 
@@ -76,7 +87,7 @@ class PieChart {
             .data(vis.pie(vis.nestedData.percent))
             .enter()
             .append("path")
-            .attr("fill", d => vis.colorScale(vis.colorValue(d)))
+            .attr("fill", d => vis.colorScale(vis.typeValue(d)))
             .attr("d", vis.arc);
 
         // Add text label on pie chart
@@ -96,16 +107,17 @@ class PieChart {
             .data(vis.pie(vis.nestedData.percent))
             .enter()
             .append("g")
-            .attr("transform", (d, i) => `translate(${vis.config.containerWidth - 210},${vis.config.containerHeight - 100 + (i * 20)})`)
+            .attr("transform", (d, i) => `translate(${vis.config.containerWidth - 210},${vis.config.containerHeight - 100 + (i * 22)})`)
             .attr("class", "legend");
 
         vis.legend.append("rect")
             .attr("width", 18)
             .attr("height", 18)
-            .attr("fill", d => vis.colorScale(vis.colorValue(d)));
+            .attr("rx", 4)
+            .attr("fill", d => vis.colorScale(vis.typeValue(d)));
 
         vis.legend.append("text")
-            .text(d => vis.colorValue(d))
+            .text(d => vis.typeValue(d))
             .style("font-size", 15)
             .attr("fill", "#FFFACA")
             .attr("y", 12)
@@ -122,5 +134,19 @@ class PieChart {
             .style("font-weight", 500)
             .attr("fill", "#FFFACA")
             .text(d => "Average " + d.title + " : " + d3.format(".1f")(d.value));
+
+        // Tooltip event listeners
+        vis.legend.on('mouseover', (event, d) => {
+            d3.select('#tooltip')
+                .style('display', 'block')
+                .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
+                .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
+                .html(`
+          <div class='tooltip-title'>${vis.tooltipScale(vis.typeValue(d))}</div>
+        `);
+        })
+            .on('mouseleave', () => {
+                d3.select('#tooltip').style('display', 'none');
+            });
     }
 }
