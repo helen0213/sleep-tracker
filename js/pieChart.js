@@ -56,7 +56,43 @@ class PieChart {
         vis.chart = vis.svg.append('g')
             .attr('transform', `translate(${vis.config.width / 2},${vis.config.height / 2})`);
 
+
         vis.updateVis();
+
+        // Add legend
+        const legend = vis.svg.selectAll(".legend")
+            .data(vis.pie(vis.nestedData.percent))
+            .join("g")
+            .attr('class', 'legend')
+            .attr("transform", (d, i) => `translate(${vis.config.containerWidth - 210},${vis.config.containerHeight - 100 + (i * 22)})`)
+            .attr("class", "legend");
+
+        legend.append("rect")
+            .attr("width", 18)
+            .attr("height", 18)
+            .attr("rx", 4)
+            .attr("fill", d => vis.colorScale(vis.typeValue(d)));
+
+        legend.append("text")
+            .text(d => vis.typeValue(d))
+            .style("font-size", 15)
+            .attr("fill", "#FFFACA")
+            .attr("y", 12)
+            .attr("x", 22);
+
+        // Tooltip event listeners
+        legend.on('mouseover', (event, d) => {
+            d3.select('#tooltip')
+                .style('display', 'block')
+                .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
+                .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
+                .html(`
+          <div class='tooltip-title'>${vis.tooltipScale(vis.typeValue(d))}</div>
+        `);
+        })
+            .on('mouseleave', () => {
+                d3.select('#tooltip').style('display', 'none');
+            });
     }
 
     updateVis() {
@@ -114,39 +150,5 @@ class PieChart {
             .attr("fill", "#FFFACA")
             .text(d => "Average " + d.title + " : " + d3.format(".1f")(d.value));
 
-        // Add legend
-        const legend = vis.svg.selectAll(".legend")
-            .data(vis.pie(vis.nestedData.percent))
-            .join("g")
-            .attr('class', 'legend')
-            .attr("transform", (d, i) => `translate(${vis.config.containerWidth - 210},${vis.config.containerHeight - 100 + (i * 22)})`)
-            .attr("class", "legend");
-
-        legend.append("rect")
-            .attr("width", 18)
-            .attr("height", 18)
-            .attr("rx", 4)
-            .attr("fill", d => vis.colorScale(vis.typeValue(d)));
-
-        legend.append("text")
-            .text(d => vis.typeValue(d))
-            .style("font-size", 15)
-            .attr("fill", "#FFFACA")
-            .attr("y", 12)
-            .attr("x", 22);
-
-        // Tooltip event listeners
-        legend.on('mouseover', (event, d) => {
-            d3.select('#tooltip')
-                .style('display', 'block')
-                .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
-                .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
-                .html(`
-          <div class='tooltip-title'>${vis.tooltipScale(vis.typeValue(d))}</div>
-        `);
-        })
-            .on('mouseleave', () => {
-                d3.select('#tooltip').style('display', 'none');
-            });
     }
 }

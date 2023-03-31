@@ -1,5 +1,6 @@
 class ScatterPlot {
 
+
     /**
      * Class constructor with initial configuration
      * @param {Object}
@@ -79,6 +80,7 @@ class ScatterPlot {
             .attr('dy', '.71em')
             .text('Sleep Efficiency');
 
+        vis.group = d3.group(vis.data, d => d.ageGroup, d => d.sleepDuration);
     }
 
     updateVis() {
@@ -115,12 +117,36 @@ class ScatterPlot {
             .attr('cy', d => vis.yScale(vis.yValue(d)))
             .attr('cx', d => vis.xScale(vis.xValue(d)))
             .on('click', function(event, d) {
+                let ageGroup = d.ageGroup;
+                let sleepDuration = d.sleepDuration;
+                let id = d.id;
+                let key = ageGroup.concat(",").concat(sleepDuration);
+
                 const isActive = individuals.includes(d.id);
                 if (isActive) {
                     individuals = individuals.filter(f => f !== d.id); // Remove filter
                 } else {
                     individuals.push(d.id); // Append filter
                 }
+
+                let group = vis.group.get(d.ageGroup).get(d.sleepDuration);
+                let isAgeDurationActive = ageDurationFilter.includes(key);
+                let pointsIncluded = group.filter(d => individuals.includes(d.id));
+
+                // Filter data for heatmap
+                if (isAgeDurationActive && isActive) {
+                    if (pointsIncluded.length === 0) {
+                        ageDurationFilter = ageDurationFilter.filter(f => f !== key);
+                        d3.select(this).classed('active', !isActive);
+                    }
+                } else if (!isAgeDurationActive && !isActive){
+                    ageDurationFilter.push(key);
+                    d3.select(this).classed('active', !isActive);
+                }
+
+                // update other charts
+                heatmap.updateVis();
+                pieChart.updateVis();
                 d3.select(this).classed('active', !isActive); // Add class to style active filters with CSS
             });
 
