@@ -12,7 +12,9 @@ class ScatterPlot {
             parentElement: _config.parentElement,
             containerWidth: 800,
             containerHeight: 500,
-            margin: {top: 15, right: 15, bottom: 20, left: 30}
+            margin: {top: 15, right: 15, bottom: 20, left: 30},
+            tooltipPadding: 15
+
         }
         this.data = _data;
         this.initVis();
@@ -148,6 +150,30 @@ class ScatterPlot {
                 heatmap.updateVis();
                 pieChart.updateVis();
                 d3.select(this).classed('active', !isActive); // Add class to style active filters with CSS
+
+            });
+
+        // Tooltip event listeners
+        circles
+            .on('mouseover', (event,d) => {
+                d3.select('#tooltip')
+                    .style('display', 'block')
+                    .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
+                    .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
+                    .html(`
+              <div class="tooltip-title">Age: ${d.age}</div>
+              <div><i>Sleep Efficiency: ${d.sleepEfficiency}</i></div>
+              <ul>
+                <li>Sleep Duration: ${d.sleepDuration} hours</li>
+                <li>Caffeine Consumption: ${d.caffeineConsumption} mg</li>
+                <li>Alcohol Consumption: ${d.alcoholConsumption} oz</li>
+                <li>Exercise Frequency: ${d.exerciseFrequency} times</li>
+
+              </ul>
+            `);
+            })
+            .on('mouseleave', () => {
+                d3.select('#tooltip').style('display', 'none');
             });
 
         // Update the axes/gridlines
