@@ -127,6 +127,11 @@ class Heatmap {
                 return avg;
             }, d => d.ageGroup, d => d.sleepDuration);
         }
+        vis.groupedData.forEach((row) => {
+            row[1].forEach((cell) => {
+                cell.push(vis.data.filter(d => d.ageGroup === row[0] && d.sleepDuration === cell[0]).length);
+            });
+        });
         // set legend color and range
         let max = d3.max(values);
         let min = d3.min(values);
@@ -173,6 +178,16 @@ class Heatmap {
                 } else {
                     return vis.colorScale(vis.colorValue(d));
                 }
+            })
+            .on('mouseover', (event, d) => {
+                    d3.select('#tooltip')
+                        .style('display', 'block')
+                        .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
+                        .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
+                        .html(`<div class='tooltip-title'>Number of people: ${d[2]}</div>`);
+            })
+            .on('mouseleave', () => {
+                d3.select('#tooltip').style('display', 'none');
             })
             .on('click', function (event, d) {
                 let ageGroup = this.parentNode.getAttribute("age-group");
