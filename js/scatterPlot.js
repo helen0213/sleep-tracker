@@ -64,12 +64,12 @@ class ScatterPlot {
         // Append y-axis group
         vis.yAxisG = vis.chart.append('g')
             .attr('class', 'axis y-axis')
-            .attr('transform', `translate(10,0)`);
+            .attr('transform', `translate(10,5)`);
 
         // Append both axis titles
         vis.chart.append('text')
             .attr('class', 'axis-title')
-            .attr('y', vis.height - 15)
+            .attr('y', vis.height - 24)
             .attr('x', vis.width + 10)
             .attr('dy', '.71em')
             .style('text-anchor', 'end')
@@ -78,7 +78,7 @@ class ScatterPlot {
         vis.svg.append('text')
             .attr('class', 'axis-title')
             .attr('x', 0)
-            .attr('y', 0)
+            .attr('y', 3)
             .attr('dy', '.71em')
             .text('Sleep Efficiency');
 
