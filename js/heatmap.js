@@ -38,7 +38,7 @@ class Heatmap {
             .interpolator(d3.interpolateRgb("#FFFACA", "green"));
 
         vis.xScale = d3.scaleBand()
-            .range([22, vis.config.width - 40]);
+            .range([27, vis.config.width - 40]);
 
         vis.yScale = d3.scaleBand()
             .range([0, vis.config.height-25])
@@ -60,7 +60,7 @@ class Heatmap {
         // Append y-axis group
         vis.yAxisG = vis.chartArea.append('g')
             .attr('class', 'axis y-axis')
-            .attr('transform', `translate(20,5)`);
+            .attr('transform', `translate(25,5)`);
 
         // Append both axis titles
         vis.chartArea.append('text')
