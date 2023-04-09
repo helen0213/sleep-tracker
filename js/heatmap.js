@@ -214,7 +214,7 @@ class Heatmap {
                 })
                 // update other charts
                 scatterPlot.updateVis();
-                pieChart.updateVis();
+                doughnutChart.updateVis();
                 d3.select(this).classed('active', !isActive);
             });
         vis.xAxisG.call(vis.xAxis);

@@ -148,7 +148,7 @@ class ScatterPlot {
 
                 // update other charts
                 heatmap.updateVis();
-                pieChart.updateVis();
+                doughnutChart.updateVis();
                 d3.select(this).classed('active', !isActive); // Add class to style active filters with CSS
 
             });
