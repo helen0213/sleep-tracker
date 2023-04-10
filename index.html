@@ -8,7 +8,6 @@
 </head>
 <body>
 <!-- Add HTML content, SVG drawing area, ... -->
-<!-- TODO: relocate components later-->
 
 <div class="container">
     <div class="inner-container">
@@ -19,6 +18,7 @@
             <div class="header"> Sleep Patterns </div>
         </div>
         <div>
+            <span class="title radio-title"> Please select a lifestyle that affects sleep quality</span>
             <form>
                 <div class="radio-group">
                     <input type="radio" id="caffeine" name="selector" checked><label for="caffeine">Caffeine consumption</label><input
@@ -32,10 +32,12 @@
     </div>
     <div class="inner-container">
 
-        <div>
+        <div class="pie-area">
+            <p class="title"> More info about individual(s)</p>
             <svg id="doughnutchart" class="margin-right"></svg>
         </div>
         <div>
+            <p class="title"> Sleep efficiency v.s. Age</p>
             <svg id="scatterplot"></svg>
         </div>
     </div>
