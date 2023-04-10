@@ -163,7 +163,9 @@ class DoughnutChart {
             .style("font-weight", 500)
             .attr("fill", "#FFFACA")
             .text(d => {
-                if (d.title == "Selected" || d.title == "Age" || d.title == "ID") {
+                if (d.title == "Sleep Duration" || d.title == "Average Sleep Duration") {
+                    return d.title + " : " + d3.format(".1f")(d.value) + " h";
+                } else if (d.title == "Selected" || d.title == "Age" || d.title == "ID") {
                     return d.title + " : " + d3.format(".0f")(d.value);
                 } else {
                     return d.title + " : " + d3.format(".1f")(d.value);
