@@ -12,7 +12,8 @@ class ScatterPlot {
             parentElement: _config.parentElement,
             containerWidth: 800,
             containerHeight: 480,
-            margin: {top: 15, right: 15, bottom: 20, left: 30}
+            margin: {top: 15, right: 15, bottom: 20, left: 30},
+            tooltipPadding: 15
         }
         this.data = _data;
         this.initVis();
@@ -62,12 +63,12 @@ class ScatterPlot {
         // Append y-axis group
         vis.yAxisG = vis.chart.append('g')
             .attr('class', 'axis y-axis')
-            .attr('transform', `translate(10,0)`);
+            .attr('transform', `translate(10,5)`);
 
         // Append both axis titles
         vis.chart.append('text')
             .attr('class', 'axis-title')
-            .attr('y', vis.height - 15)
+            .attr('y', vis.height - 24)
             .attr('x', vis.width + 10)
             .attr('dy', '.71em')
             .style('text-anchor', 'end')
@@ -76,7 +77,7 @@ class ScatterPlot {
         vis.svg.append('text')
             .attr('class', 'axis-title')
             .attr('x', 0)
-            .attr('y', 0)
+            .attr('y', 3)
             .attr('dy', '.71em')
             .text('Sleep Efficiency');
 
@@ -146,8 +147,32 @@ class ScatterPlot {
 
                 // update other charts
                 heatmap.updateVis();
-                pieChart.updateVis();
+                doughnutChart.updateVis();
                 d3.select(this).classed('active', !isActive); // Add class to style active filters with CSS
+
+            });
+
+        // Tooltip event listeners
+        circles
+            .on('mouseover', (event,d) => {
+                d3.select('#tooltip')
+                    .style('display', 'block')
+                    .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
+                    .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
+                    .html(`
+              <div class="tooltip-title">Age: ${d.age}</div>
+              <div><i>Sleep Efficiency: ${d.sleepEfficiency}</i></div>
+              <ul>
+                <li>Sleep Duration: ${d.sleepDuration} hours</li>
+                <li>Caffeine Consumption: ${d.caffeineConsumption} mg</li>
+                <li>Alcohol Consumption: ${d.alcoholConsumption} oz</li>
+                <li>Exercise Frequency: ${d.exerciseFrequency} times</li>
+
+              </ul>
+            `);
+            })
+            .on('mouseleave', () => {
+                d3.select('#tooltip').style('display', 'none');
             });
 
         // Update the axes/gridlines

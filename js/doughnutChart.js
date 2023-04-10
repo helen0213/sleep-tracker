@@ -1,4 +1,4 @@
-class PieChart {
+class DoughnutChart {
     // Definition of sleep type from wikipidia
     /**
      * Class constructor with initial configuration
@@ -29,9 +29,9 @@ class PieChart {
         // Initialize scales
         vis.tooltipScale = d3.scaleOrdinal()
             .domain(["Rapid Eye Movement Sleep", "Deep Sleep", "Light Sleep"])
-            .range(["Rapid eye movement sleep (REM sleep) is a unique phase of sleep in mammals and birds, characterized by random rapid movement of the eyes, accompanied by low muscle tone throughout the body, and the propensity of the sleeper to dream vividly.",
+            .range(["Rapid eye movement sleep (REM sleep) is a unique phase of sleep in mammals and birds, characterized by random rapid movement <br />of the eyes, accompanied by low muscle tone throughout the body, and the propensity of the sleeper to dream vividly.",
                 "Slow-wave sleep, often referred to as deep sleep, consists of stage three of non-rapid eye movement sleep.",
-                "Non-rapid eye movement sleep, also known as light sleep, is unlike REM sleep, there is usually little or no eye movement during these stages. Dreaming occurs during both sleep states, and muscles are not paralyzed as in REM sleep."]);
+                "Non-rapid eye movement sleep, also known as light sleep, is unlike REM sleep, there is usually little or no eye movement during <br />these stages. Dreaming occurs during both sleep states, and muscles are not paralyzed as in REM sleep."]);
 
         vis.colorScale = d3.scaleOrdinal()
             .domain(["Rapid Eye Movement Sleep", "Deep Sleep", "Light Sleep"])
@@ -109,14 +109,28 @@ class PieChart {
         if (individuals.length == 0) {
             vis.filteredData = vis.data;
         }
-        vis.nestedData = {
-            percent: [{ type: "Rapid Eye Movement Sleep", percentage: d3.mean(vis.filteredData, d => d.REMSleepPercentage) },
-            { type: "Deep Sleep", percentage: d3.mean(vis.filteredData, d => d.deepSleepPercentage) },
-            { type: "Light Sleep", percentage: d3.mean(vis.filteredData, d => d.lightSleepPercentage) }],
-            average: [{ title: "Age", value: d3.mean(vis.filteredData, d => d.age) },
-            { title: "Sleep Duration", value: d3.mean(vis.filteredData, d => d.sleepDuration) },
-            { title: "Sleep Efficiency", value: d3.mean(vis.filteredData, d => d.sleepEfficiency) }],
-        };
+        if (individuals.length == 1) {
+            let single = vis.filteredData[0];
+            vis.nestedData = {
+                percent: [{ type: "Rapid Eye Movement Sleep", percentage: single.REMSleepPercentage },
+                { type: "Deep Sleep", percentage: single.deepSleepPercentage },
+                { type: "Light Sleep", percentage: single.lightSleepPercentage }],
+                average: [{ title: "ID", value: single.id },
+                { title: "Age", value: single.age },
+                { title: "Sleep Duration", value: single.sleepDuration },
+                { title: "Sleep Efficiency", value: single.sleepEfficiency }]
+            };
+        } else {
+            vis.nestedData = {
+                percent: [{ type: "Rapid Eye Movement Sleep", percentage: d3.mean(vis.filteredData, d => d.REMSleepPercentage) },
+                { type: "Deep Sleep", percentage: d3.mean(vis.filteredData, d => d.deepSleepPercentage) },
+                { type: "Light Sleep", percentage: d3.mean(vis.filteredData, d => d.lightSleepPercentage) }],
+                average: [{ title: "Selected", value: vis.filteredData.length },
+                { title: "Average Age", value: d3.mean(vis.filteredData, d => d.age) },
+                { title: "Average Sleep Duration", value: d3.mean(vis.filteredData, d => d.sleepDuration) },
+                { title: "Average Sleep Efficiency", value: d3.mean(vis.filteredData, d => d.sleepEfficiency) }]
+            };
+        }
         vis.typeValue = d => d.data.type;
         vis.renderVis();
     }
@@ -125,7 +139,7 @@ class PieChart {
         // Bind data to visual elements
         let vis = this;
         
-        // Add pie chart
+        // Add doughnut chart
         const arcs = vis.chart.selectAll(".arc")
             .data(vis.pie(vis.nestedData.percent))
             .join('path')
@@ -133,7 +147,7 @@ class PieChart {
             .attr("fill", d => vis.colorScale(vis.typeValue(d)))
             .attr("d", vis.arc);
 
-        // Add text label on pie chart
+        // Add text label on doughnut chart
         const label = vis.chart.selectAll(".label")
             .data(vis.pie(vis.nestedData.percent))
             .join("text")
@@ -150,12 +164,19 @@ class PieChart {
             .data(vis.nestedData.average)
             .join("text")
             .attr('class', 'text')
-            .attr("transform", (d, i) => `translate(${vis.config.width / 2},${vis.config.height / 2 - 40 + (i * 35)})`)
+            .attr("transform", (d, i) => `translate(${vis.config.width / 2},${vis.config.height / 2 - 60 + (i * 35)})`)
             .style("text-anchor", "middle")
             .style("font-size", 20)
             .style("font-weight", 500)
             .attr("fill", "#FFFACA")
-            .text(d => "Average " + d.title + " : " + d3.format(".1f")(d.value));
-
+            .text(d => {
+                if (d.title == "Sleep Duration" || d.title == "Average Sleep Duration") {
+                    return d.title + " : " + d3.format(".1f")(d.value) + " h";
+                } else if (d.title == "Selected" || d.title == "Age" || d.title == "ID") {
+                    return d.title + " : " + d3.format(".0f")(d.value);
+                } else {
+                    return d.title + " : " + d3.format(".1f")(d.value);
+                }
+            });
     }
 }

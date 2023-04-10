@@ -3,7 +3,7 @@
  */
 
 // global objects
-let data, pieChart, scatterPlot, heatmap;
+let data, doughnutChart, scatterPlot, heatmap;
 let individuals = [];
 let ageDurationFilter = [];
 let sp_hp = [];
@@ -44,10 +44,10 @@ d3.csv('data/Sleep_Efficiency_preprocessed.csv').then(_data => {
     });
 
     // TODO: commented out to avoid errors, uncomment for testing purpose
-    pieChart = new PieChart({
-        parentElement: '#piechart',
+    doughnutChart = new DoughnutChart({
+        parentElement: '#doughnutchart',
     }, data);
-    pieChart.updateVis();
+    doughnutChart.updateVis();
 
     scatterPlot = new ScatterPlot({
         parentElement: '#scatterplot',

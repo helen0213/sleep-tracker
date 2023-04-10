@@ -24,6 +24,10 @@ body {
     text-align: center;
 }
 
+.radio-title {
+    margin-left: 20px;
+}
+
 #scatterplot {
     margin-left: 33px;
 }
@@ -33,7 +37,7 @@ body {
     margin-right: 0px;
 }
 
-#piechart {
+#doughnutchart {
     margin-left: 213px;
     margin-right: 123px;
 }
