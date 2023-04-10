@@ -10,9 +10,9 @@ class PieChart {
         this.config = {
             parentElement: _config.parentElement,
             containerWidth: 600,
-            containerHeight: 525,
+            containerHeight: 500,
             margin: { top: 25, right: 25, bottom: 25, left: 25 },
-            radius: 210,
+            radius: 200,
             tooltipPadding: _config.tooltipPadding || 15
         }
         this.data = _data;
@@ -64,8 +64,15 @@ class PieChart {
             .data(vis.pie(vis.nestedData.percent))
             .join("g")
             .attr('class', 'legend')
-            .attr("transform", (d, i) => `translate(${vis.config.containerWidth - 210},${vis.config.containerHeight - 100 + (i * 22)})`)
+            .attr("transform", (d, i) => `translate(${vis.config.containerWidth - 210},${vis.config.containerHeight - 80 + (i * 22)})`)
             .attr("class", "legend");
+
+        vis.svg.append("text")
+            .text("Stages of sleep")
+            .style("font-size", 18)
+            .attr("fill", "#FFFACA")
+            .attr("x", vis.config.containerWidth - 210)
+            .attr("y", vis.config.containerHeight - 92);
 
         legend.append("rect")
             .attr("width", 18)

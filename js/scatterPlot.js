@@ -11,7 +11,7 @@ class ScatterPlot {
         this.config = {
             parentElement: _config.parentElement,
             containerWidth: 800,
-            containerHeight: 500,
+            containerHeight: 480,
             margin: {top: 15, right: 15, bottom: 20, left: 30}
         }
         this.data = _data;

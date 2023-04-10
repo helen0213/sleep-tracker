@@ -2,7 +2,7 @@ body {
     font-family: 'Noto Sans JP', sans-serif;
     font-size: 13px;
     color: #FFFACA;
-    padding: 30px;
+    margin-top: 30px;
     background: #172D13;
 }
 
@@ -16,9 +16,26 @@ body {
     margin-left: 280px;
 }
 
+.title {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #FFFACA;
+    font-weight: bold;
+    text-align: center;
+}
+
+#scatterplot {
+    margin-left: 33px;
+}
+
+.pie-area {
+    width: 45%;
+    margin-right: 0px;
+}
+
 #piechart {
     margin-left: 213px;
-    margin-right: 163px;
+    margin-right: 123px;
 }
 
 .inner-container {

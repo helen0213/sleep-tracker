@@ -80,7 +80,7 @@ class Heatmap {
 
         // prep for legend
         vis.legend = vis.svg.append('g')
-            .attr('transform', `translate(${vis.config.containerWidth - vis.config.legendWidth - vis.config.margin.right},0)`);
+            .attr('transform', `translate(${vis.config.containerWidth - vis.config.legendWidth - vis.config.margin.right},30)`);
 
         vis.legendColorGradient = vis.legend.append('defs').append('linearGradient')
             .attr('id', 'linear-gradient');
@@ -114,18 +114,21 @@ class Heatmap {
                 values.push(avg);
                 return avg;
             }, d => d.ageGroup, d => d.sleepDuration);
+            vis.legendLabel = ["Consumption in mg"];
         } else if (vis.category === 'alcohol') {
             vis.groupedData = d3.rollups(vis.data, v => {
                 let avg = d3.mean(v, d => d.alcoholConsumption);
                 values.push(avg);
                 return avg;
             }, d => d.ageGroup, d => d.sleepDuration);
+            vis.legendLabel = ["Consumption in oz"];
         } else if (vis.category === 'exercise') {
             vis.groupedData = d3.rollups(vis.data, v => {
                 let avg = d3.mean(v, d => d.exerciseFrequency);
                 values.push(avg);
                 return avg;
             }, d => d.ageGroup, d => d.sleepDuration);
+            vis.legendLabel = ["Frequency in days"];
         }
         vis.groupedData.forEach((row) => {
             row[1].forEach((cell) => {
@@ -229,6 +232,16 @@ class Heatmap {
 
         // Add stops to the gradient
         // Learn more about gradients: https://www.visualcinnamon.com/2016/05/smooth-color-legend-d3-svg-gradient
+        vis.chartArea.selectAll('.legend-label')
+            .data(vis.legendLabel)
+            .join("text")
+            .attr("class", "legend-label")
+            .text(d => d)
+            .style("font-size", 16)
+            .attr("fill", "#FFFACA")
+            .attr("x", vis.config.containerWidth - vis.config.legendWidth - vis.config.margin.right-25)
+            .attr("y", 5);
+
         vis.legendColorGradient.selectAll('stop')
             .data(vis.colorScale.range())
             .join('stop')
