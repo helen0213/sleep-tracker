@@ -13,7 +13,7 @@ class ScatterPlot {
             containerWidth: 800,
             containerHeight: 480,
             margin: {top: 15, right: 15, bottom: 20, left: 30},
-            tooltipPadding: 15
+            tooltipPadding: 5
         }
         this.data = _data;
         this.initVis();
@@ -162,13 +162,10 @@ class ScatterPlot {
                     .html(`
               <div class="tooltip-title">Age: ${d.age}</div>
               <div><i>Sleep Efficiency: ${d.sleepEfficiency}</i></div>
-              <ul>
                 <li>Sleep Duration: ${d.sleepDuration} hours</li>
                 <li>Caffeine Consumption: ${d.caffeineConsumption} mg</li>
                 <li>Alcohol Consumption: ${d.alcoholConsumption} oz</li>
                 <li>Exercise Frequency: ${d.exerciseFrequency} times</li>
-
-              </ul>
             `);
             })
             .on('mouseleave', () => {

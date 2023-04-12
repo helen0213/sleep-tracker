@@ -75,8 +75,8 @@ class DoughnutChart {
             .attr("y", vis.config.containerHeight - 92);
 
         legend.append("rect")
-            .attr("width", 18)
-            .attr("height", 18)
+            .attr("width", 17)
+            .attr("height", 17)
             .attr("rx", 4)
             .attr("fill", d => vis.colorScale(vis.typeValue(d)));
 
@@ -92,7 +92,7 @@ class DoughnutChart {
             d3.select('#tooltip')
                 .style('display', 'block')
                 .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
-                .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
+                .style('top', (event.pageY + vis.config.tooltipPadding - 40) + 'px')
                 .html(`
           <div class='tooltip-title'>${vis.tooltipScale(vis.typeValue(d))}</div>
         `);
